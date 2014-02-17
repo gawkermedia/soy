@@ -1,8 +1,11 @@
 # Scala data structures for Google Closure Templates
 
-This library allows contructing data structures in a similar style how [Play! Framework's JSON library](http://www.playframework.com/documentation/2.2.1/ScalaJson) allows building JSON,
-which can then be directly passed to the [Play! 2.1 plugin for Google Closure Templates](https://github.com/gawkermedia/play2-closure) for rendering. The goal is to
-avoid passing template data as `Map[String, Any]` and use the Scala compiler's support for detecting mistakes.
+This library allows contructing data structures in a similar style how
+[Play! Framework's JSON library](http://www.playframework.com/documentation/2.2.1/ScalaJson) allows building JSON,
+which can then be directly passed to the
+[Play! 2.1 plugin for Google Closure Templates](https://github.com/gawkermedia/play2-closure) for rendering.
+The goal is to avoid passing template data as `Map[String, Any]` and use the Scala compiler's support for detecting
+mistakes.
 
 ## Installation
 
@@ -12,14 +15,15 @@ avoid passing template data as `Map[String, Any]` and use the Scala compiler's s
 4. Add this to your application as a library dependency:
 
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "0.2-SNAPSHOT"
+libraryDependencies += "com.kinja" %% "soy" % "0.2.1-SNAPSHOT"
 ```
 
 ## Usage
 
 ### Template data types
 
-All data types extend a base trait called `SoyValue`. The types described below are direct mappings to [Google Closure Templates data types](https://developers.google.com/closure/templates/docs/concepts).
+All data types extend a base trait called `SoyValue`. The types described below are direct mappings to
+[Google Closure Templates data types](https://developers.google.com/closure/templates/docs/concepts).
 
 #### `SoyNull`
 
@@ -103,7 +107,9 @@ Soy.map(
 
 ### Creating serializers for your own classes
 
-You can define your own implicit serializers which can be used by the library to convert your classes to `SoyValue`. Creating such a serializer is as simple as extending the SoyWrites trait and writing the implementation of the `toSoy` method:
+You can define your own implicit serializers which can be used by the library to convert your classes to `SoyValue`.
+Creating such a serializer is as simple as extending the SoyWrites trait and writing the implementation of the `toSoy`
+method:
 
 ```scala
 import com.kinja.soy._
@@ -120,7 +126,11 @@ class UserSoyWrites extends SoyWrites[User] {
 }
 ```
 
-For the library to be able to use your serializer, you need to make it implicitly available. Here's a more realistic example which uses [Play! 2.1 plugin for Google Closure Templates](https://github.com/gawkermedia/play2-closure) to render the template `users.soy` by passing it a `SoyMap` in which the list of users is under the key `users`. The implicit `UserSoyWrites` is used by the library to convert the `List[User]` to a `SoyList` by converting each user in it.
+For the library to be able to use your serializer, you need to make it implicitly available. Here's a more realistic
+example which uses [Play! 2.1 plugin for Google Closure Templates](https://github.com/gawkermedia/play2-closure) to
+render the template `views.users` in `users.soy` by passing it a `SoyMap` in which the list of users is under the
+key `users`. The implicit `UserSoyWrites` is used by the library to convert the `List[User]` to a `SoyList` by
+converting each user in it.
 
 ```scala
 import com.kinja.soy._
@@ -157,4 +167,20 @@ The `users.soy` template file may look something like this:
   </div>
 {/foreach}
 {/template}
+```
+
+### Explicitly conversions
+
+You can explicitly convert a value which has an implicit `SoyWrites` availble to `SoyValue` using `Soy.toSoy()`
+```scala
+import com.kinja.soy._
+
+object App {
+
+  implicit val userSoyWrites = new UserSoyWrites
+
+  val users: List[User] = List(User(...), ...)
+
+  val soyUsers: SoyValue = Soy.toSoy(users)
+}
 ```
