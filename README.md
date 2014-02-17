@@ -12,7 +12,7 @@ avoid passing template data as `Map[String, Any]` and use the Scala compiler's s
 4. Add this to your application as a library dependency:
 
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "0.1-SNAPSHOT"
+libraryDependencies += "com.kinja" %% "soy" % "0.2-SNAPSHOT"
 ```
 
 ## Usage
