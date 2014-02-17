@@ -61,7 +61,7 @@ A set of name/value pairs. Names are strings but values can be any `SoyValue`.
 
 #### The raw way
 
-You can build lists and maps directly using SoyValue constructors.
+You can build lists and maps directly using `SoyValue` constructors.
 
 ```scala
 import com.kinja.soy._
@@ -84,7 +84,7 @@ SoyMap(Seq(
 
 #### The implicit way
 
-There is an easier way to construct complex data structures using implicit conversions:
+There is an easier way to construct complex data structures using implicit conversions.
 
 ```scala
 import com.kinja.soy._
@@ -108,8 +108,7 @@ Soy.map(
 ### Creating serializers for your own classes
 
 You can define your own implicit serializers which can be used by the library to convert your classes to `SoyValue`.
-Creating such a serializer is as simple as extending the SoyWrites trait and writing the implementation of the `toSoy`
-method:
+Creating such a serializer is as simple as extending the SoyWrites trait and implementing the `toSoy` method.
 
 ```scala
 import com.kinja.soy._
@@ -128,9 +127,9 @@ class UserSoyWrites extends SoyWrites[User] {
 
 For the library to be able to use your serializer, you need to make it implicitly available. Here's a more realistic
 example which uses [Play! 2.1 plugin for Google Closure Templates](https://github.com/gawkermedia/play2-closure) to
-render the template `views.users` in `users.soy` by passing it a `SoyMap` in which the list of users is under the
-key `users`. The implicit `UserSoyWrites` is used by the library to convert the `List[User]` to a `SoyList` by
-converting each user in it.
+render the template `views.users` in `users.soy` by passing a `SoyMap` in which the list of users is under the
+key `users`. The implicit `UserSoyWrites` is used by the library to convert `List[User]` to a `SoyList` by converting
+each user in it.
 
 ```scala
 import com.kinja.soy._
@@ -159,7 +158,8 @@ The `users.soy` template file may look something like this:
 {template .users}
 {foreach $user in $users}
   <div class="user">
-    {$user.name} ({$user.age}) {if $user.email}<a href="mailto:{$user.email}">{$user.email}</a>{/if}
+    {$user.name} ({$user.age})
+    {if $user.email}<a href="mailto:{$user.email}">{$user.email}</a>{/if}
   </div>
 {ifempty}
   <div class="message">
@@ -169,9 +169,9 @@ The `users.soy` template file may look something like this:
 {/template}
 ```
 
-### Explicitly conversions
+### Explicit conversions
 
-You can explicitly convert a value which has an implicit `SoyWrites` availble to `SoyValue` using `Soy.toSoy()`
+You can explicitly convert a value which has an implicit `SoyWrites` available to `SoyValue` using `Soy.toSoy()`
 ```scala
 import com.kinja.soy._
 
