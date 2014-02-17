@@ -15,7 +15,7 @@ mistakes.
 4. Add this to your application as a library dependency:
 
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "0.2.1-SNAPSHOT"
+libraryDependencies += "com.kinja" %% "soy" % "0.2.2-SNAPSHOT"
 ```
 
 ## Usage

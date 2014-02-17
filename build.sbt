@@ -1,13 +1,10 @@
-
-import com.typesafe.sbt.SbtScalariform._
-
 // Project settings
 
 name := "soy"
 
 organization := "com.kinja"
 
-version := "0.2.1-" + {if (System.getProperty("JENKINS_BUILD") == null) "SNAPSHOT" else "RELEASE"}
+version := "0.2.2" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
 scalaVersion := "2.10.2"
 
@@ -37,4 +34,4 @@ publishTo <<= (version)(version =>
 
 // External plugins
 
-scalariformSettings
+com.typesafe.sbt.SbtScalariform.scalariformSettings
