@@ -4,7 +4,7 @@ import org.specs2.mutable._
 import scala.collection.JavaConversions._
 import com.google.template.soy.data.{ SoyListData, SoyMapData }
 
-class SoyWritesSpec extends Specification with DefaultSoyWrites {
+class SoyWritesSpec extends Specification {
 
   case class Simple(value: Int)
 

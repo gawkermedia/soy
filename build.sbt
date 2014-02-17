@@ -7,7 +7,7 @@ name := "soy"
 
 organization := "com.kinja"
 
-version := "0.1-" + {if (System.getProperty("JENKINS_BUILD") == null) "SNAPSHOT" else "RELEASE"}
+version := "0.2-" + {if (System.getProperty("JENKINS_BUILD") == null) "SNAPSHOT" else "RELEASE"}
 
 scalaVersion := "2.10.2"
 

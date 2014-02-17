@@ -16,6 +16,11 @@ trait SoyWrites[-T] extends DefaultSoyWrites {
 }
 
 /**
+ * Default converters.
+ */
+object SoyWrites extends DefaultSoyWrites
+
+/**
  * Provides conversion from base types to SoyValue.
  */
 trait DefaultSoyWrites {
