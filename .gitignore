@@ -1,0 +1,45 @@
+*.class
+*.log
+
+# sbt specific
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+.history
+.classpath
+.project
+.cache
+.settings/
+/src/main/resources/rebel.xml
+project/target
+src/main/webapp/WEB-INF/classes
+src/main/webapp/WEB-INF/lib
+/bin/
+
+# IntelliJ IDEA specific
+.idea/
+.idea_modules/
+*.iml
+
+# Sublime Text 2 specific
+.ensime
+.ensime_lucene
+.tags
+.tags_sorted_by_file
+
+# TextMate specific
+.tm_properties
+
+# Mac specific
+.DS_Store
+
+# Application specific
+/logs/application.log
+/.target/
+RUNNING_PID
