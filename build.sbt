@@ -4,7 +4,7 @@ name := "soy"
 
 organization := "com.kinja"
 
-version := "0.3.1" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
+version := "0.3.2" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
 scalaVersion := "2.10.2"
 
@@ -17,7 +17,8 @@ shellPrompt in ThisBuild := { state => Project.extract(state).currentRef.project
 // Dependencies
 
 libraryDependencies ++= Seq(
-	("com.google.template" % "soy" % "2012-12-21").exclude("asm", "asm"),
+	"com.google.template" % "soy-excluding-deps" % "2015-01-09",
+	"com.google.guava" % "guava" % "17.0" % "test",
 	"org.specs2" %% "specs2" % "2.3.8" % "test"
 )
 

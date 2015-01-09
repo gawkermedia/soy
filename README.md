@@ -18,6 +18,13 @@ mistakes.
 libraryDependencies += "com.kinja" %% "soy" % "0.2.2-SNAPSHOT"
 ```
 
+This library is based on the modified version of Google Closure Templates: https://github.com/gawkermedia/closure-templates
+without its dependencies, so to use this library you have to add at least the Google guava library version 17:
+
+```scala
+libraryDependencies += "com.google.guava" % "guava" % "17.0"
+```
+
 ## Usage
 
 ### Template data types
