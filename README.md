@@ -17,7 +17,7 @@ mistakes.
 4. Add this to your application as a library dependency:
 
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "0.2.2-SNAPSHOT"
+libraryDependencies += "com.kinja" %% "soy" % "0.3.3-SNAPSHOT"
 ```
 
 This library is based on the modified version of Google Closure Templates: https://github.com/gawkermedia/closure-templates
