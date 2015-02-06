@@ -4,9 +4,9 @@ name := "soy"
 
 organization := "com.kinja"
 
-version := "0.3.2" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
+version := "0.3.3" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.11.4"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
@@ -19,7 +19,9 @@ shellPrompt in ThisBuild := { state => Project.extract(state).currentRef.project
 libraryDependencies ++= Seq(
 	"com.google.template" % "soy-excluding-deps" % "2015-01-09",
 	"com.google.guava" % "guava" % "17.0" % "test",
-	"org.specs2" %% "specs2" % "2.3.8" % "test"
+	"org.specs2" %% "specs2-core" % "2.4.15" % "test",
+	"org.specs2" %% "specs2-mock" % "2.4.15" % "test",
+	"org.specs2" %% "specs2-junit" % "2.4.15" % "test"
 )
 
 // Publishing
