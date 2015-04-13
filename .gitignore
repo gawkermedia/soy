@@ -40,6 +40,5 @@ src/main/webapp/WEB-INF/lib
 .DS_Store
 
 # Application specific
-/logs/application.log
 /.target/
 RUNNING_PID

@@ -25,21 +25,24 @@ object Soy {
   /**
    * The implicit conversion from any type with a SoyWrites to SoyValueWrapper.
    */
-  implicit def toSoyFieldSoyValueWrapper[T](field: T)(implicit writes: SoyWrites[T]): SoyValueWrapper = SoyValueWrapperImpl(writes.toSoy(field))
+  implicit def toSoyFieldSoyValueWrapper[T](field: T)(implicit writes: SoyWrites[T]): SoyValueWrapper =
+    SoyValueWrapperImpl(writes.toSoy(field))
 
   /**
    * Creates a SoyList from arbitrary items.
    * @param items List items which must have implicit SoyWrites available.
    * @return The soy list.
    */
-  def list(items: SoyValueWrapper*): SoyList = SoyList(items.map(_.asInstanceOf[SoyValueWrapperImpl].field))
+  def list(items: SoyValueWrapper*): SoyList =
+    SoyList(items.map(_.asInstanceOf[SoyValueWrapperImpl].field))
 
   /**
    * Creates a SoyMap from key-value pairs.
    * @param items Key-value pairs. The values must have implicit SoyWrites available.
    * @return The soy map.
    */
-  def map(items: (String, SoyValueWrapper)*): SoyMap = SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) })
+  def map(items: (String, SoyValueWrapper)*): SoyMap =
+    SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) })
 
   /**
    * Converts a value of any type to SoyValue using its implicit SoyWrites.
@@ -47,4 +50,54 @@ object Soy {
    * @return The result of the conversion.
    */
   def toSoy[T](o: T)(implicit writes: SoyWrites[T]): SoyValue = writes.toSoy(o)
+
+  /**
+   * Converts a value of any type to SoyMap using its implicit SoyMapWrites.
+   * @param o The instance to be converted.
+   * @return The result of the conversion.
+   */
+  def toSoyMap[T](o: T)(implicit writes: SoyMapWrites[T]): SoyMap = writes.toSoy(o)
+
+  /**
+   * Constructs a `SoyMapWrites[T]` sending the value to the given field name.
+   * @param field Name of the field the value will exist at.
+   */
+  def field[T](field: String)(implicit writes: SoyWrites[T]): SoyMapWrites[T] =
+    new SoyMapWrites[T] { def toSoy(t: T) = map(field -> t) }
+
+  /**
+   * Constructs a `SoyMapWrites[Option[T]]` sending the value to the given field name.
+   * if it is defined. Otherwise the SoyMap is empty.
+   * @param field Name of the field the value will exist at.
+   */
+  def optionalField[T](field: String)(implicit writes: SoyWrites[T]): SoyMapWrites[Option[T]] =
+    new SoyMapWrites[Option[T]] {
+      def toSoy(ot: Option[T]) = ot match {
+        case Some(t) => map(field -> t)
+        case None => map()
+      }
+    }
+
+  /**
+   * Constructs a `SoyMapWrites[T]` sending the value to the given field name.
+   * This is can be used in place of `field` when defining `SoyMapWrites` for
+   * recursive data structures.
+   * @param field Name of the field the value will exist at.
+   */
+  def lazyField[T](field: String)(writes: => SoyWrites[T]): SoyMapWrites[T] =
+    new SoyMapWrites[T] { def toSoy(t: T) = map(field -> writes.toSoy(t)) }
+
+  /**
+   * Constructs a `SoyMapWrites[Option[T]]` sending the value to the given field name.
+   * if it is defined. Otherwise the SoyMap is empty. This is can be used in place of
+   * `optionalField` when defining `SoyMapWrites` for recursive data structures.
+   * @param field Name of the field the value will exist at.
+   */
+  def lazyOptionalField[T](field: String)(writes: => SoyWrites[T]): SoyMapWrites[Option[T]] =
+    new SoyMapWrites[Option[T]] {
+      def toSoy(ot: Option[T]) = ot match {
+        case Some(t) => map(field -> writes.toSoy(t))
+        case None => map()
+      }
+    }
 }

@@ -21,6 +21,25 @@ trait SoyWrites[-T] extends DefaultSoyWrites {
 object SoyWrites extends DefaultSoyWrites
 
 /**
+ * The class of types that can be converted into a SoyMap. Every SoyMapWrites implies a SoyWrites.
+ */
+trait SoyMapWrites[-T] extends SoyWrites[T] {
+  def toSoy(t: T): SoyMap
+  final def and[U](w: SoyMapWrites[U]): SoyMapWrites[(T, U)] = {
+    val _toSoy = toSoy _
+    new SoyMapWrites[(T, U)] {
+      def toSoy(tup: (T, U)) = _toSoy(tup._1) ++ w.toSoy(tup._2)
+    }
+  }
+  final def apply[U](f: U => T): SoyMapWrites[U] = {
+    val _toSoy = toSoy _
+    new SoyMapWrites[U] {
+      def toSoy(u: U) = _toSoy(f(u))
+    }
+  }
+}
+
+/**
  * Provides conversion from base types to SoyValue.
  */
 trait DefaultSoyWrites {
