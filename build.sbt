@@ -4,9 +4,9 @@ name := "soy"
 
 organization := "com.kinja"
 
-version := "0.3.3" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
+version := "0.3.4" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
-scalaVersion := "2.11.4"
+crossScalaVersions := Seq("2.10.5", "2.11.6")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 

@@ -1,7 +1,5 @@
 # Scala data structures for Google Closure Templates
 
-Note: this branch targets Scala 2.11.x, support for Scala 2.10.x has been moved to [this branch](https://github.com/gawkermedia/soy/tree/2.10.x).
-
 This library allows contructing data structures in a similar style how
 [Play! Framework's JSON library](http://www.playframework.com/documentation/2.2.1/ScalaJson) allows building JSON,
 which can then be directly passed to the
@@ -17,7 +15,7 @@ mistakes.
 4. Add this to your application as a library dependency:
 
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "0.3.3-SNAPSHOT"
+libraryDependencies += "com.kinja" %% "soy" % "0.3.4-SNAPSHOT"
 ```
 
 This library is based on the modified version of Google Closure Templates: https://github.com/gawkermedia/closure-templates
