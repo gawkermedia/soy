@@ -6,7 +6,7 @@ organization := "com.kinja"
 
 version := "0.3.4" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
-crossScalaVersions := Seq("2.10.5", "2.11.6")
+crossScalaVersions := Seq("2.10.4", "2.11.6")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
@@ -21,8 +21,20 @@ libraryDependencies ++= Seq(
 	"com.google.guava" % "guava" % "17.0" % "test",
 	"org.specs2" %% "specs2-core" % "2.4.15" % "test",
 	"org.specs2" %% "specs2-mock" % "2.4.15" % "test",
-	"org.specs2" %% "specs2-junit" % "2.4.15" % "test"
+	"org.specs2" %% "specs2-junit" % "2.4.15" % "test",
+	"org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
+
+libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-compiler" % _)
+
+libraryDependencies ++= {
+	CrossVersion.partialVersion(scalaVersion.value) match {
+		case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq()
+		case Some((2, 10)) => Seq(
+			"org.scalamacros" %% "quasiquotes" % "2.0.1",
+			compilerPlugin("org.scalamacros" % "paradise_2.10.4" % "2.0.1"))
+	}
+}
 
 // Publishing
 
