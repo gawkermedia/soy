@@ -57,47 +57,4 @@ object Soy {
    * @return The result of the conversion.
    */
   def toSoyMap[T](o: T)(implicit writes: SoyMapWrites[T]): SoyMap = writes.toSoy(o)
-
-  /**
-   * Constructs a `SoyMapWrites[T]` sending the value to the given field name.
-   * @param field Name of the field the value will exist at.
-   */
-  def field[T](field: String)(implicit writes: SoyWrites[T]): SoyMapWrites[T] =
-    new SoyMapWrites[T] { def toSoy(t: T) = map(field -> t) }
-
-  /**
-   * Constructs a `SoyMapWrites[Option[T]]` sending the value to the given field name.
-   * if it is defined. Otherwise the SoyMap is empty.
-   * @param field Name of the field the value will exist at.
-   */
-  def optionalField[T](field: String)(implicit writes: SoyWrites[T]): SoyMapWrites[Option[T]] =
-    new SoyMapWrites[Option[T]] {
-      def toSoy(ot: Option[T]) = ot match {
-        case Some(t) => map(field -> t)
-        case None => map()
-      }
-    }
-
-  /**
-   * Constructs a `SoyMapWrites[T]` sending the value to the given field name.
-   * This is can be used in place of `field` when defining `SoyMapWrites` for
-   * recursive data structures.
-   * @param field Name of the field the value will exist at.
-   */
-  def lazyField[T](field: String)(writes: => SoyWrites[T]): SoyMapWrites[T] =
-    new SoyMapWrites[T] { def toSoy(t: T) = map(field -> writes.toSoy(t)) }
-
-  /**
-   * Constructs a `SoyMapWrites[Option[T]]` sending the value to the given field name.
-   * if it is defined. Otherwise the SoyMap is empty. This is can be used in place of
-   * `optionalField` when defining `SoyMapWrites` for recursive data structures.
-   * @param field Name of the field the value will exist at.
-   */
-  def lazyOptionalField[T](field: String)(writes: => SoyWrites[T]): SoyMapWrites[Option[T]] =
-    new SoyMapWrites[Option[T]] {
-      def toSoy(ot: Option[T]) = ot match {
-        case Some(t) => map(field -> writes.toSoy(t))
-        case None => map()
-      }
-    }
 }
