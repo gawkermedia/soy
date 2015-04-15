@@ -21,6 +21,13 @@ trait SoyWrites[-T] extends DefaultSoyWrites {
 object SoyWrites extends DefaultSoyWrites
 
 /**
+ * The class of types that can be converted into a SoyMap. Every SoyMapWrites implies a SoyWrites.
+ */
+trait SoyMapWrites[-T] extends SoyWrites[T] {
+  def toSoy(t: T): SoyMap
+}
+
+/**
  * Provides conversion from base types to SoyValue.
  */
 trait DefaultSoyWrites {

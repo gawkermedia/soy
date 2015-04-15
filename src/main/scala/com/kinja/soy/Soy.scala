@@ -25,21 +25,24 @@ object Soy {
   /**
    * The implicit conversion from any type with a SoyWrites to SoyValueWrapper.
    */
-  implicit def toSoyFieldSoyValueWrapper[T](field: T)(implicit writes: SoyWrites[T]): SoyValueWrapper = SoyValueWrapperImpl(writes.toSoy(field))
+  implicit def toSoyFieldSoyValueWrapper[T](field: T)(implicit writes: SoyWrites[T]): SoyValueWrapper =
+    SoyValueWrapperImpl(writes.toSoy(field))
 
   /**
    * Creates a SoyList from arbitrary items.
    * @param items List items which must have implicit SoyWrites available.
    * @return The soy list.
    */
-  def list(items: SoyValueWrapper*): SoyList = SoyList(items.map(_.asInstanceOf[SoyValueWrapperImpl].field))
+  def list(items: SoyValueWrapper*): SoyList =
+    SoyList(items.map(_.asInstanceOf[SoyValueWrapperImpl].field))
 
   /**
    * Creates a SoyMap from key-value pairs.
    * @param items Key-value pairs. The values must have implicit SoyWrites available.
    * @return The soy map.
    */
-  def map(items: (String, SoyValueWrapper)*): SoyMap = SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) })
+  def map(items: (String, SoyValueWrapper)*): SoyMap =
+    SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) })
 
   /**
    * Converts a value of any type to SoyValue using its implicit SoyWrites.
@@ -47,4 +50,11 @@ object Soy {
    * @return The result of the conversion.
    */
   def toSoy[T](o: T)(implicit writes: SoyWrites[T]): SoyValue = writes.toSoy(o)
+
+  /**
+   * Converts a value of any type to SoyMap using its implicit SoyMapWrites.
+   * @param o The instance to be converted.
+   * @return The result of the conversion.
+   */
+  def toSoyMap[T](o: T)(implicit writes: SoyMapWrites[T]): SoyMap = writes.toSoy(o)
 }
