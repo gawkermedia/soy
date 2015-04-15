@@ -143,7 +143,7 @@ object SoyMacroImpl {
     }
 
     val soyMapWritesDef =
-      q"new SoyMapWrites[$atag] { def toSoy(clazz: $atag) = $soy.map(..$pairs) }"
+      q"new com.kinja.soy.SoyMapWrites[$atag] { def toSoy(clazz: $atag) = $soy.map(..$pairs) }"
 
     // Recursive types must be constructed using Lazy.
     if (!hasRec)
