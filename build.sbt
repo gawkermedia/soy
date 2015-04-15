@@ -4,7 +4,8 @@ name := "soy"
 
 organization := "com.kinja"
 
-version := "0.3.4" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
+// We use Semantic Versioning. See: http://semver.org/
+version := "0.4.4" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
 crossScalaVersions := Seq("2.10.4", "2.11.6")
 
