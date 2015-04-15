@@ -53,9 +53,21 @@ object SoyMacroImpl {
     }
 
     val applies =
-      companionType.declaration(stringToTermName("apply")) match {
+      companionType.declaration(newTermName("apply")) match {
         case NoSymbol => c.abort(c.enclosingPosition, "No apply function found")
         case s => s.asMethod.alternatives
+      }
+
+    // When presented with a case class parameterized over A, the A taken by
+    // `apply` and the A returned by `unapply` do not compare equal because they
+    // have different owners. In this case we compare the types of the symbols
+    // which are both className.A and compare equal.
+    def compareTypeLists(a: List[Type], b: List[Type]): Boolean =
+      (a.length == b.length) && (a zip b).forall {
+        case (TypeRef(NoPrefix, aName, aParams), TypeRef(NoPrefix, bName, bParams)) =>
+          aName.typeSignature =:= bName.typeSignature &&
+            compareTypeLists(aParams, bParams)
+        case (_a, _b) => _a =:= _b
       }
 
     // Find the apply method that matches the unapply method.
@@ -73,11 +85,13 @@ object SoyMacroImpl {
         } yield lastApply <:< lastUnapply).getOrElse(false)
         initsMatch && lastMatch
       } => apply
-      case (apply: MethodSymbol) if (apply.paramss.headOption.map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes) => apply
+      case (apply: MethodSymbol) if apply.paramss.headOption.map(_.map(_.asTerm.typeSignature)).exists(a =>
+        unapplyReturnTypes.exists(u => compareTypeLists(a, u))
+      ) => apply
     }
 
     val params = apply match {
-      case Some(apply) => apply.paramss.head //verify there is a single parameter group
+      case Some(apply) => apply.paramss.head // Verify there is a single parameter group
       case None if unapplyReturnTypes.isEmpty => List.empty // The case class has no parameters.
       case None => c.abort(c.enclosingPosition, "No apply function found matching unapply parameters")
     }
@@ -106,13 +120,6 @@ object SoyMacroImpl {
     } else
       applyParamImplicits
 
-    // Collect missing implicits then abort with an error message for each missing implicit.
-    val missingImplicits = inferredImplicits.collect {
-      case Implicit(_, t, impl, rec, _) if (impl == EmptyTree && !rec) => t
-    }
-    if (missingImplicits.nonEmpty)
-      c.abort(c.enclosingPosition, s"No implicit SoyWrites for ${missingImplicits.mkString(", ")} available.")
-
     val lazyVal = Select(Ident(newTermName("self")), newTermName("lazyVal"))
     // Select a higher-kinded implicit constructor from SoyWrites.
     def hkImpl(methodName: String): Tree =
@@ -123,7 +130,9 @@ object SoyMacroImpl {
     // Collect all the class members into `("fieldName", clazz.fieldName)` pairs.
     val pairs = inferredImplicits.map {
       case Implicit(name, t, impl, rec, tpe) =>
-        if (!rec)
+        if (impl == EmptyTree && !rec) // We couldn't supply the implicit, usually because this argument is generic.
+          q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName}))"
+        else if (!rec)
           q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName})($impl))"
         else {
           hasRec = true
@@ -146,9 +155,9 @@ object SoyMacroImpl {
       q"new com.kinja.soy.SoyMapWrites[$atag] { def toSoy(clazz: $atag) = $soy.map(..$pairs) }"
 
     // Recursive types must be constructed using Lazy.
-    if (!hasRec)
+    if (!hasRec) {
       c.Expr[SoyMapWrites[A]](soyMapWritesDef)
-    else {
+    } else {
       val soyMapWritesA = AppliedTypeTree(
         Ident(soyMapWrites.tpe.typeSymbol),
         List(Ident(atag.tpe.typeSymbol)))
