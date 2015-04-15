@@ -1,6 +1,7 @@
 package com.kinja.soy
 
 import scala.language.implicitConversions
+import scala.language.experimental.macros
 
 /**
  * Provides convenience methods for building SoyValues.
@@ -57,4 +58,9 @@ object Soy {
    * @return The result of the conversion.
    */
   def toSoyMap[T](o: T)(implicit writes: SoyMapWrites[T]): SoyMap = writes.toSoy(o)
+
+  /**
+   * Generates a SoyMapWrites[T] for a given case class T.
+   */
+  def writes[T]: SoyMapWrites[T] = macro SoyMacroImpl.writesImpl[T]
 }
