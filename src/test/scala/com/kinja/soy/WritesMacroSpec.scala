@@ -4,6 +4,7 @@ import org.scalatest._
 
 case class EmptyClass()
 case class OptionClass(i: Int, s: Option[String])
+case class OptionClass2(i: Int, s: Option[OptionClass])
 case class RecOptionClass(i: Int, b: Option[RecOptionClass])
 case class RecListClass(i: Int, b: List[RecListClass])
 case class RecSetClass(i: Int, b: Set[RecSetClass])
@@ -20,26 +21,31 @@ case class Non(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int, i
 case class Dec(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int, i: Int, j: Int)
 case class Inner(i: Int)
 case class Outer(i: Int, inner: Inner)
+case class ParamClass[A](i: Int, a: A)
+case class TwoParamClass[A, B](a: A, b: B)
 
 class WritesMacroSpec extends FlatSpec with Matchers {
-  implicit val z: SoyWrites[OptionClass] = Soy.writes[OptionClass]
-  implicit val b: SoyWrites[RecOptionClass] = Soy.writes[RecOptionClass]
-  implicit val c: SoyWrites[RecListClass] = Soy.writes[RecListClass]
-  implicit val d: SoyWrites[RecSetClass] = Soy.writes[RecSetClass]
-  implicit val f: SoyWrites[RecMapClass] = Soy.writes[RecMapClass]
-  implicit val g: SoyWrites[Single] = Soy.writes[Single]
-  implicit val h: SoyWrites[Pair] = Soy.writes[Pair]
-  implicit val i: SoyWrites[Triple] = Soy.writes[Triple]
-  implicit val j: SoyWrites[Quad] = Soy.writes[Quad]
-  implicit val k: SoyWrites[Quint] = Soy.writes[Quint]
-  implicit val l: SoyWrites[Sext] = Soy.writes[Sext]
-  implicit val m: SoyWrites[Sept] = Soy.writes[Sept]
-  implicit val n: SoyWrites[Oct] = Soy.writes[Oct]
-  implicit val o: SoyWrites[Non] = Soy.writes[Non]
-  implicit val p: SoyWrites[Dec] = Soy.writes[Dec]
-  implicit val q: SoyWrites[EmptyClass] = Soy.writes[EmptyClass]
-  implicit val r: SoyWrites[Inner] = Soy.writes[Inner]
-  implicit val s: SoyWrites[Outer] = Soy.writes[Outer]
+  implicit val z = Soy.writes[OptionClass]
+  implicit val y = Soy.writes[OptionClass2]
+  implicit val b = Soy.writes[RecOptionClass]
+  implicit val c = Soy.writes[RecListClass]
+  implicit val d = Soy.writes[RecSetClass]
+  implicit val f = Soy.writes[RecMapClass]
+  implicit val g = Soy.writes[Single]
+  implicit val h = Soy.writes[Pair]
+  implicit val i = Soy.writes[Triple]
+  implicit val j = Soy.writes[Quad]
+  implicit val k = Soy.writes[Quint]
+  implicit val l = Soy.writes[Sext]
+  implicit val m = Soy.writes[Sept]
+  implicit val n = Soy.writes[Oct]
+  implicit val o = Soy.writes[Non]
+  implicit val p = Soy.writes[Dec]
+  implicit val q = Soy.writes[EmptyClass]
+  implicit val r = Soy.writes[Inner]
+  implicit val s = Soy.writes[Outer]
+  implicit def t[A: SoyWrites]: SoyWrites[ParamClass[A]] = Soy.writes[ParamClass[A]]
+  implicit def u[A: SoyWrites, B: SoyWrites]: SoyWrites[TwoParamClass[A, B]] = Soy.writes[TwoParamClass[A, B]]
 
   "Soy.writes" should "support empty case classes" in {
     Soy.toSoy(EmptyClass()) should be(Soy.map())
@@ -52,8 +58,14 @@ class WritesMacroSpec extends FlatSpec with Matchers {
   }
 
   it should "support case classes with optional members" in {
-    Soy.toSoy(OptionClass(5, None)) should be(Soy.map("i" -> 5, "s" -> SoyNull))
-    Soy.toSoy(OptionClass(5, Some("foo"))) should be(Soy.map("i" -> 5, "s" -> "foo"))
+    val o1 = OptionClass(5, None)
+    val o2 = OptionClass(5, Some("foo"))
+    val oo1 = OptionClass2(5, None)
+    val oo2 = OptionClass2(5, Some(o1))
+    Soy.toSoy(o1) should be(Soy.map("i" -> 5, "s" -> SoyNull))
+    Soy.toSoy(o2) should be(Soy.map("i" -> 5, "s" -> "foo"))
+    Soy.toSoy(oo1) should be(Soy.map("i" -> 5, "s" -> SoyNull))
+    Soy.toSoy(oo2) should be(Soy.map("i" -> 5, "s" -> Soy.map("i" -> 5, "s" -> SoyNull)))
   }
 
   it should "support recursive case classes with optional members" in {
@@ -82,6 +94,24 @@ class WritesMacroSpec extends FlatSpec with Matchers {
     val b2 = RecMapClass(2, Map("b1" -> b1))
     Soy.toSoy(b1) should be(Soy.map("i" -> 1, "b" -> Soy.map()))
     Soy.toSoy(b2) should be(Soy.map("i" -> 2, "b" -> Soy.map("b1" -> Soy.map("i" -> 1, "b" -> Soy.map()))))
+  }
+
+  it should "support generic case classes" in {
+    val b1 = Single(1)
+    val b2 = Pair(1, 2.0)
+    val b3 = ParamClass[Single](2, b1)
+    val b4 = ParamClass(2, b2)
+    Soy.toSoy(b3) should be(Soy.map("i" -> 2, "a" -> Soy.map("i" -> 1)))
+    Soy.toSoy(b4) should be(Soy.map("i" -> 2, "a" -> Soy.map("i" -> 1, "d" -> 2.0)))
+  }
+
+  it should "support generic case classes with two parameters" in {
+    val b1 = Single(1)
+    val b2 = Pair(1, 2.0)
+    val b3 = TwoParamClass(b1, b2)
+    val b4 = TwoParamClass(b2, b1)
+    Soy.toSoy(b3) should be(Soy.map("a" -> Soy.map("i" -> 1), "b" -> Soy.map("i" -> 1, "d" -> 2.0)))
+    Soy.toSoy(b4) should be(Soy.map("a" -> Soy.map("i" -> 1, "d" -> 2.0), "b" -> Soy.map("i" -> 1)))
   }
 
   it should "support case classes with 1 member" in {

@@ -8,6 +8,8 @@ class SoyWritesSpec extends Specification {
 
   case class Simple(value: Int)
 
+  case class Other(a: Int)
+
   case class Complex(a: Int, b: String, c: Long, d: Simple)
 
   class SimpleSoy extends SoyWrites[Simple] {
@@ -20,6 +22,10 @@ class SoyWritesSpec extends Specification {
       "b" -> complex.b,
       "c" -> complex.c,
       "d" -> complex.d)
+  }
+
+  implicit val otherSoy = new SoyMapWrites[Other] {
+    def toSoy(other: Other): SoyMap = Soy.map("a" -> other.a)
   }
 
   implicit val simpleSoy = new SimpleSoy
@@ -273,6 +279,15 @@ class SoyWritesSpec extends Specification {
       soyValue must beAnInstanceOf[SoyMap]
       built must beAnInstanceOf[SoyMapData]
       built.toString must_== "{a: 1, b: a, c: 11, d: Simple(111)}"
+    }
+  }
+
+  "SoyMapWrites" should {
+    "function as SoyWrites" in {
+      val other = Other(5)
+      val soyValue = Soy.toSoy(other)
+      soyValue must beAnInstanceOf[SoyValue]
+      soyValue must_== Soy.map("a" -> 5)
     }
   }
 
