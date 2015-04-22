@@ -23,6 +23,7 @@ case class Inner(i: Int)
 case class Outer(i: Int, inner: Inner)
 case class ParamClass[A](i: Int, a: A)
 case class TwoParamClass[A, B](a: A, b: B)
+case class GenericOptionClass[A](oa: Option[A])
 
 class WritesMacroSpec extends FlatSpec with Matchers {
   implicit val z = Soy.writes[OptionClass]
@@ -46,6 +47,7 @@ class WritesMacroSpec extends FlatSpec with Matchers {
   implicit val s = Soy.writes[Outer]
   implicit def t[A: SoyWrites]: SoyWrites[ParamClass[A]] = Soy.writes[ParamClass[A]]
   implicit def u[A: SoyWrites, B: SoyWrites]: SoyWrites[TwoParamClass[A, B]] = Soy.writes[TwoParamClass[A, B]]
+  implicit def v[A: SoyWrites]: SoyWrites[GenericOptionClass[A]] = Soy.writes[GenericOptionClass[A]]
 
   "Soy.writes" should "support empty case classes" in {
     Soy.toSoy(EmptyClass()) should be(Soy.map())
@@ -209,5 +211,10 @@ class WritesMacroSpec extends FlatSpec with Matchers {
       "i" -> 9,
       "j" -> 10)
     Soy.toSoy(clazz) should be(map)
+  }
+
+  it should "support case classes with generic members" in {
+    val clazz = GenericOptionClass(Option(5))
+    Soy.toSoy(clazz) should be(Soy.map("oa" -> 5))
   }
 }

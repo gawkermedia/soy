@@ -64,8 +64,9 @@ object SoyMacroImpl {
     // which are both className.A and compare equal.
     def compareTypeLists(a: List[Type], b: List[Type]): Boolean =
       (a.length == b.length) && (a zip b).forall {
-        case (TypeRef(NoPrefix, aName, aParams), TypeRef(NoPrefix, bName, bParams)) =>
+        case (a @ TypeRef(aPrefix, aName, aParams), b @ TypeRef(bPrefix, bName, bParams)) =>
           aName.typeSignature =:= bName.typeSignature &&
+            aPrefix == bPrefix &&
             compareTypeLists(aParams, bParams)
         case (_a, _b) => _a =:= _b
       }
