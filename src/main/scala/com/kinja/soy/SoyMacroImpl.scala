@@ -55,7 +55,7 @@ object SoyMacroImpl {
     val applies =
       companionType.declaration(newTermName("apply")) match {
         case NoSymbol => c.abort(c.enclosingPosition, "No apply function found")
-        case s => s.asMethod.alternatives
+        case s => s.asTerm.alternatives
       }
 
     // When presented with a case class parameterized over A, the A taken by

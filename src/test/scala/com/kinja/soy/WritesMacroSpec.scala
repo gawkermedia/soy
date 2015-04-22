@@ -24,6 +24,10 @@ case class Outer(i: Int, inner: Inner)
 case class ParamClass[A](i: Int, a: A)
 case class TwoParamClass[A, B](a: A, b: B)
 case class GenericOptionClass[A](oa: Option[A])
+case class MultipleApplies(i: Int)
+object MultipleApplies {
+  def apply(s: String): MultipleApplies = apply(s.length)
+}
 
 class WritesMacroSpec extends FlatSpec with Matchers {
   implicit val z = Soy.writes[OptionClass]
@@ -48,6 +52,7 @@ class WritesMacroSpec extends FlatSpec with Matchers {
   implicit def t[A: SoyWrites]: SoyWrites[ParamClass[A]] = Soy.writes[ParamClass[A]]
   implicit def u[A: SoyWrites, B: SoyWrites]: SoyWrites[TwoParamClass[A, B]] = Soy.writes[TwoParamClass[A, B]]
   implicit def v[A: SoyWrites]: SoyWrites[GenericOptionClass[A]] = Soy.writes[GenericOptionClass[A]]
+  implicit val w = Soy.writes[MultipleApplies]
 
   "Soy.writes" should "support empty case classes" in {
     Soy.toSoy(EmptyClass()) should be(Soy.map())
