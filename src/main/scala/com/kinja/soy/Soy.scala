@@ -43,7 +43,7 @@ object Soy {
    * @return The soy map.
    */
   def map(items: (String, SoyValueWrapper)*): SoyMap =
-    SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) })
+    SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) }.toMap)
 
   /**
    * Converts a value of any type to SoyValue using its implicit SoyWrites.

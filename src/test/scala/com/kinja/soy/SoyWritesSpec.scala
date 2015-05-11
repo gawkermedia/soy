@@ -298,7 +298,7 @@ class SoyWritesSpec extends Specification {
     }
     "allow building complex lists using implicit writers" in {
       val none: Option[Int] = None
-      val soyValue = Soy.list(1, 2, "a", "b", 0, 12.5f, SoyList(Seq(SoyInt(6), SoyDouble(5))), 37.802, 'h', SoyMap(Seq("a" -> SoyNull)), Some("hello"), none, 444L)
+      val soyValue = Soy.list(1, 2, "a", "b", 0, 12.5f, SoyList(Seq(SoyInt(6), SoyDouble(5))), 37.802, 'h', SoyMap(Map("a" -> SoyNull)), Some("hello"), none, 444L)
       val expected = SoyList(Seq(
         SoyInt(1),
         SoyInt(2),
@@ -309,7 +309,7 @@ class SoyWritesSpec extends Specification {
         SoyList(Seq(SoyInt(6), SoyDouble(5))),
         SoyDouble(37.802),
         SoyString("h"),
-        SoyMap(Seq(("a", SoyNull))),
+        SoyMap(Map(("a", SoyNull))),
         SoyString("hello"),
         SoyNull,
         SoyString("444")))
@@ -320,7 +320,7 @@ class SoyWritesSpec extends Specification {
   "Soy.map()" should {
     "create an empty map" in {
       val soyValue = Soy.map()
-      soyValue must_== SoyMap(Seq())
+      soyValue must_== SoyMap(Map())
     }
     "allow building complex maps using implicit writers" in {
       val none: Option[Int] = None
@@ -334,9 +334,9 @@ class SoyWritesSpec extends Specification {
         "g" -> SoyNull,
         "h" -> '&',
         "i" -> none,
-        "i" -> SoyMap(Seq("aa" -> SoyString("aa1"), "bb" -> SoyString("bb1"))),
+        "i" -> SoyMap(Map("aa" -> SoyString("aa1"), "bb" -> SoyString("bb1"))),
         "j" -> Some(SoyList(Seq())))
-      val expected = SoyMap(Seq(
+      val expected = SoyMap(Map(
         "a" -> SoyInt(1),
         "b" -> SoyInt(2),
         "c" -> SoyInt(0),
@@ -346,7 +346,7 @@ class SoyWritesSpec extends Specification {
         "g" -> SoyNull,
         "h" -> SoyString("&"),
         "i" -> SoyNull,
-        "i" -> SoyMap(Seq("aa" -> SoyString("aa1"), "bb" -> SoyString("bb1"))),
+        "i" -> SoyMap(Map("aa" -> SoyString("aa1"), "bb" -> SoyString("bb1"))),
         "j" -> SoyList(Seq())))
       soyValue must_== expected
     }
@@ -355,21 +355,21 @@ class SoyWritesSpec extends Specification {
   "Soy.list() and Soy.map()" should {
     "allow composing complex data structures" in {
       val soyValue = testData
-      val expected = SoyMap(Seq(
+      val expected = SoyMap(Map(
         "simples" -> SoyList(Seq(SoyString("Simple(1)"), SoyString("Simple(2)"))),
-        "meta" -> SoyMap(Seq(
+        "meta" -> SoyMap(Map(
           "title" -> SoyString("test title"),
           "keywords" -> SoyList(Seq(SoyString("list"), SoyString("of"), SoyString("test"), SoyString("keywords"))),
-          "user" -> SoyMap(Seq(
+          "user" -> SoyMap(Map(
             "id" -> SoyString("9876543210"),
             "name" -> SoyString("test user"),
             "posts" -> SoyInt(250),
             "complex" -> SoyList(Seq(
-              SoyMap(Seq("a" -> SoyInt(5), "b" -> SoyString("5"), "c" -> SoyString("5"), "d" -> SoyString("Simple(5)"))),
-              SoyMap(Seq("a" -> SoyInt(6), "b" -> SoyString("6"), "c" -> SoyString("6"), "d" -> SoyString("Simple(6)"))),
-              SoyMap(Seq("a" -> SoyInt(7), "b" -> SoyString("7"), "c" -> SoyString("7"), "d" -> SoyString("Simple(7)"))))),
+              SoyMap(Map("a" -> SoyInt(5), "b" -> SoyString("5"), "c" -> SoyString("5"), "d" -> SoyString("Simple(5)"))),
+              SoyMap(Map("a" -> SoyInt(6), "b" -> SoyString("6"), "c" -> SoyString("6"), "d" -> SoyString("Simple(6)"))),
+              SoyMap(Map("a" -> SoyInt(7), "b" -> SoyString("7"), "c" -> SoyString("7"), "d" -> SoyString("Simple(7)"))))),
             "loggedIn" -> SoyBoolean(true))),
-          "features" -> SoyMap(Seq(
+          "features" -> SoyMap(Map(
             "feature1" -> SoyBoolean(true),
             "feature2" -> SoyBoolean(false),
             "feature3" -> SoyBoolean(true))))),

@@ -120,7 +120,7 @@ trait DefaultSoyWrites {
    * Converter for Map[String,V] types.
    */
   implicit def mapSoy[V](implicit writes: SoyWrites[V]): SoyWrites[collection.immutable.Map[String, V]] = new SoyWrites[collection.immutable.Map[String, V]] {
-    def toSoy(ts: collection.immutable.Map[String, V]) = SoyMap(ts.map { case (k, v) => (k, Soy.toSoy(v)(writes)) }.toSeq)
+    def toSoy(ts: collection.immutable.Map[String, V]) = SoyMap(ts.map { case (k, v) => (k, Soy.toSoy(v)(writes)) }.toMap)
   }
 
   /**
