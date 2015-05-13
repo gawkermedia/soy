@@ -2,6 +2,10 @@ package com.kinja.soy
 
 import org.scalatest._
 
+case class Id[A](key: Int)
+
+case class HasId(id: Id[HasId])
+
 case class EmptyClass()
 case class OptionClass(i: Int, s: Option[String])
 case class OptionClass2(i: Int, s: Option[OptionClass])
@@ -30,6 +34,9 @@ object MultipleApplies {
 }
 
 class WritesMacroSpec extends FlatSpec with Matchers {
+  implicit def Id_Soy[A] = new SoyWrites[Id[A]] {
+    def toSoy(id: Id[A]): SoyValue = SoyInt(id.key)
+  }
   implicit val z = Soy.writes[OptionClass]
   implicit val y = Soy.writes[OptionClass2]
   implicit val b = Soy.writes[RecOptionClass]
@@ -53,9 +60,16 @@ class WritesMacroSpec extends FlatSpec with Matchers {
   implicit def u[A: SoyWrites, B: SoyWrites]: SoyWrites[TwoParamClass[A, B]] = Soy.writes[TwoParamClass[A, B]]
   implicit def v[A: SoyWrites]: SoyWrites[GenericOptionClass[A]] = Soy.writes[GenericOptionClass[A]]
   implicit val w = Soy.writes[MultipleApplies]
+  implicit val x = Soy.writes[HasId]
 
   "Soy.writes" should "support empty case classes" in {
     Soy.toSoy(EmptyClass()) should be(Soy.map())
+  }
+
+  it should "support phantom types" in {
+    val id = Id[HasId](1)
+    val hasId = HasId(id)
+    Soy.toSoy(hasId) should be(Soy.map("id" -> 1))
   }
 
   it should "support nested case classes" in {

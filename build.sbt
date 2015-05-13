@@ -5,7 +5,7 @@ name := "soy"
 organization := "com.kinja"
 
 // We use Semantic Versioning. See: http://semver.org/
-version := "1.0.0" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
+version := "1.0.1" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
 
 crossScalaVersions := Seq("2.10.4", "2.11.6")
 

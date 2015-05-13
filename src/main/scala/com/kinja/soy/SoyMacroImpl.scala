@@ -139,16 +139,17 @@ object SoyMacroImpl {
           hasRec = true
           val lazyImpl =
             if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor)
-              hkImpl("OptionSoy")
+              Some(hkImpl("OptionSoy"))
             else if (tpe.typeConstructor <:< typeOf[Array[_]].typeConstructor)
-              hkImpl("arraySoy")
+              Some(hkImpl("arraySoy"))
             else if (tpe.typeConstructor <:< typeOf[Map[_, _]].typeConstructor)
-              hkImpl("mapSoy")
+              Some(hkImpl("mapSoy"))
             else if (tpe.typeConstructor <:< typeOf[Traversable[_]].typeConstructor)
-              hkImpl("traversableSoy")
+              Some(hkImpl("traversableSoy"))
             else
-              lazyVal
-          q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName})($lazyImpl))"
+              None
+          lazyImpl.fold(q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName}))")(impl =>
+            q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName})($impl))")
         }
     }
 
