@@ -42,35 +42,35 @@ case class SoyList(value: Seq[SoyValue]) extends AnyVal with SoyValue {
   def build = new SoyListData(asJavaIterable(value.map(_.build)))
 }
 
-case class SoyMap(fields: Seq[(String, SoyValue)]) extends AnyVal with SoyValue {
+case class SoyMap(value: Map[String, SoyValue]) extends AnyVal with SoyValue {
 
-  def build = new SoyMapData(mapAsJavaMap(Map(fields.map { case (k, v) => (k, v.build) }: _*)))
+  def build = new SoyMapData(mapAsJavaMap(value.map { case (k, v) => k -> v.build }))
 
   /**
    * All distinct keys of the map.
    */
-  def keys: Set[String] = fields.map(_._1).toSet
+  def keys: Set[String] = value.map(_._1).toSet
 
   /**
    * All distinct values of the map.
    */
-  def values: Set[SoyValue] = fields.map(_._2).toSet
+  def values: Set[SoyValue] = value.map(_._2).toSet
 
   /**
    * Merge this map with an other one. Values from other override value of the current map.
    */
   def ++(other: SoyMap): SoyMap = {
-    val otherKeys = other.keys
-    SoyMap(fields.filterNot(v => otherKeys(v._1)) ++ other.fields)
+    SoyMap(value ++ other.value)
   }
 
   /**
    * Removes a key from the map.
    */
-  def -(key: String): SoyMap = SoyMap(fields.filterNot(_._1 == key))
+  def -(key: String): SoyMap = SoyMap(value.filterNot(_._1 == key))
 
   /**
    * Appends a key-value pair to the map.
    */
-  def +(field: (String, SoyValue)): SoyMap = SoyMap(fields :+ field)
+  def +(field: (String, SoyValue)): SoyMap = SoyMap(value + field)
+
 }
