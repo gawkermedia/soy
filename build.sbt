@@ -5,7 +5,7 @@ name := "soy"
 organization := "com.kinja"
 
 // We use Semantic Versioning. See: http://semver.org/
-version := "1.0.1" + {if (System.getProperty("JENKINS_BUILD") == null) "-SNAPSHOT" else ""}
+version := "1.0.1"
 
 crossScalaVersions := Seq("2.10.4", "2.11.6")
 
@@ -39,14 +39,28 @@ libraryDependencies ++= {
 
 // Publishing
 
-resolvers += "Gawker Public Group" at "https://nexus.kinja-ops.com/nexus/content/groups/public/"
+credentials += Credentials(Path.userHome / ".ivy2" / ".sonatype")
 
-credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
+pgpSecretRing := file(System.getProperty("SEC_RING", ""))
 
-publishTo <<= (version)(version =>
-  if (version endsWith "SNAPSHOT") Some("Gawker Snapshots" at "https://nexus.kinja-ops.com/nexus/content/repositories/snapshots/")
-  else                             Some("Gawker Releases" at "https://nexus.kinja-ops.com/nexus/content/repositories/releases/")
-)
+pgpPublicRing := file(System.getProperty("PUB_RING", ""))
+
+pgpPassphrase := Some(Array(System.getProperty("PGP_PASS", ""): _*))
+
+pomExtra := {
+  <url>https://github.com/gawkermedia/soy</url>
+  <licenses>
+    <license>
+      <name>BSD 3-Clause</name>
+      <url>https://github.com/gawkermedia/soy/blob/master/LICENSE</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>git@github.com:gawkermedia/soy.git</connection>
+    <developerConnection>scm:git:git@github.com:gawkermedia/soy.git</developerConnection>
+    <url>git@github.com:gawkermedia/soy</url>
+  </scm>
+}
 
 // External plugins
 
