@@ -18,8 +18,7 @@ shellPrompt in ThisBuild := { state => Project.extract(state).currentRef.project
 // Dependencies
 
 libraryDependencies ++= Seq(
-	"com.google.template" % "soy-excluding-deps" % "2015-01-09",
-	"com.google.guava" % "guava" % "17.0" % "test",
+	"com.google.template" % "soy" % "2015-04-10",
 	"org.specs2" %% "specs2-core" % "2.4.15" % "test",
 	"org.specs2" %% "specs2-mock" % "2.4.15" % "test",
 	"org.specs2" %% "specs2-junit" % "2.4.15" % "test",
