@@ -59,6 +59,13 @@ pomExtra := {
     <developerConnection>scm:git:git@github.com:gawkermedia/soy.git</developerConnection>
     <url>git@github.com:gawkermedia/soy</url>
   </scm>
+  <developers>
+    <developer>
+      <name>Kinja Developers</name>
+      <organization>Gawker Media Group</organization>
+      <organizationUrl>http://kinja.com</organizationUrl>
+    </developer>
+  </developers>
 }
 
 // External plugins
