@@ -55,40 +55,21 @@ class SoyValueSpec extends Specification {
 
   "SoyFloat" should {
     "build the wrapped +Float" in {
-      val floatValue: Float = 12.5f
+      val floatValue: Double = 12.5
       val value: Any = SoyFloat(floatValue).build
       value must_== floatValue
     }
     "build the wrapped 0" in {
-      val floatValue: Float = 0.0f
+      val floatValue: Double = 0.0
       val value: Any = SoyFloat(floatValue).build
       value must_== floatValue
     }
     "build the wrapped -Float" in {
-      val floatValue: Float = -34.5f
+      val floatValue: Double = -34.5
       val value: Any = SoyFloat(floatValue).build
       value must_== floatValue
     }
   }
-
-  "SoyDouble" should {
-    "build the wrapped +Double" in {
-      val doubleValue: Double = 12.5980
-      val value: Any = SoyDouble(doubleValue).build
-      value must_== doubleValue
-    }
-    "build the wrapped 0" in {
-      val doubleValue: Double = 0.0
-      val value: Any = SoyDouble(doubleValue).build
-      value must_== doubleValue
-    }
-    "build the wrapped -Double" in {
-      val doubleValue: Double = -34.2391
-      val value: Any = SoyDouble(doubleValue).build
-      value must_== doubleValue
-    }
-  }
-
   "SoyList" should {
     "build the wrapped Seq() as SoyListData" in {
       val seq = Seq[SoyValue]()
@@ -136,7 +117,7 @@ class SoyValueSpec extends Specification {
       value.toString must_== "{a: 1, b: x, c: null, d: false}"
     }
     "build the wrapped Seq[String, SoyList](items) as SoyMapData" in {
-      val map = Map[String, SoyList]("a" -> SoyList(Seq(SoyInt(1), SoyInt(2))), "b" -> SoyList(Seq(SoyInt(4), SoyNull)), "c" -> SoyList(Seq[SoyDouble]()))
+      val map = Map[String, SoyList]("a" -> SoyList(Seq(SoyInt(1), SoyInt(2))), "b" -> SoyList(Seq(SoyInt(4), SoyNull)), "c" -> SoyList(Seq[SoyFloat]()))
       val value: Any = SoyMap(map).build
       value must beAnInstanceOf[SoyMapData]
       value.toString must_== "{a: [1, 2], b: [4, null], c: []}"

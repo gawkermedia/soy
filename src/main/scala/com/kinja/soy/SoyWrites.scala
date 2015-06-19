@@ -78,7 +78,7 @@ trait DefaultSoyWrites {
    * Converter for Double types.
    */
   implicit object DoubleSoy extends SoyWrites[Double] {
-    def toSoy(o: Double) = SoyDouble(o)
+    def toSoy(o: Double) = SoyFloat(o)
   }
 
   /**

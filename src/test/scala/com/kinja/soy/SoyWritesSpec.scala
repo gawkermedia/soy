@@ -84,10 +84,10 @@ class SoyWritesSpec extends Specification {
       soyValue must beAnInstanceOf[SoyFloat]
       soyValue.build must_== floatValue
     }
-    "be an implicit SoyWrites from Double to SoyDouble" in {
+    "be an implicit SoyWrites from Double to SoyFloat" in {
       val doubleValue: Double = 12
       val soyValue = Soy.toSoy(doubleValue)
-      soyValue must beAnInstanceOf[SoyDouble]
+      soyValue must beAnInstanceOf[SoyFloat]
       soyValue.build must_== doubleValue
     }
     "be an implicit SoyWrites from Char to SoyString" in {
@@ -298,7 +298,7 @@ class SoyWritesSpec extends Specification {
     }
     "allow building complex lists using implicit writers" in {
       val none: Option[Int] = None
-      val soyValue = Soy.list(1, 2, "a", "b", 0, 12.5f, SoyList(Seq(SoyInt(6), SoyDouble(5))), 37.802, 'h', SoyMap(Map("a" -> SoyNull)), Some("hello"), none, 444L)
+      val soyValue = Soy.list(1, 2, "a", "b", 0, 12.5f, SoyList(Seq(SoyInt(6), SoyFloat(5))), 37.802, 'h', SoyMap(Map("a" -> SoyNull)), Some("hello"), none, 444L)
       val expected = SoyList(Seq(
         SoyInt(1),
         SoyInt(2),
@@ -306,8 +306,8 @@ class SoyWritesSpec extends Specification {
         SoyString("b"),
         SoyInt(0),
         SoyFloat(12.5f),
-        SoyList(Seq(SoyInt(6), SoyDouble(5))),
-        SoyDouble(37.802),
+        SoyList(Seq(SoyInt(6), SoyFloat(5))),
+        SoyFloat(37.802),
         SoyString("h"),
         SoyMap(Map(("a", SoyNull))),
         SoyString("hello"),
@@ -330,7 +330,7 @@ class SoyWritesSpec extends Specification {
         "c" -> 0,
         "d" -> 452.5f,
         "e" -> 905.438098023,
-        "f" -> SoyList(Seq(SoyDouble(56), SoyInt(4))),
+        "f" -> SoyList(Seq(SoyFloat(56), SoyInt(4))),
         "g" -> SoyNull,
         "h" -> '&',
         "i" -> none,
@@ -341,8 +341,8 @@ class SoyWritesSpec extends Specification {
         "b" -> SoyInt(2),
         "c" -> SoyInt(0),
         "d" -> SoyFloat(452.5f),
-        "e" -> SoyDouble(905.438098023),
-        "f" -> SoyList(Seq(SoyDouble(56.0), SoyInt(4))),
+        "e" -> SoyFloat(905.438098023),
+        "f" -> SoyList(Seq(SoyFloat(56.0), SoyInt(4))),
         "g" -> SoyNull,
         "h" -> SoyString("&"),
         "i" -> SoyNull,
