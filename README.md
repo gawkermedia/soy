@@ -9,20 +9,9 @@ mistakes.
 
 ## Installation
 
-1. Clone the repository
-2. Go into the soy directory
-3. Execute `sbt publish-local`
-4. Add this to your application as a library dependency:
-
+Add the following to your `build.sbt` file:
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "0.3.4-SNAPSHOT"
-```
-
-This library is based on the modified version of Google Closure Templates: https://github.com/gawkermedia/closure-templates
-without its dependencies, so to use this library you have to add at least the Google guava library version 17:
-
-```scala
-libraryDependencies += "com.google.guava" % "guava" % "17.0"
+libraryDependencies += "com.kinja" %% "soy" % "1.0.2"
 ```
 
 ## Usage
