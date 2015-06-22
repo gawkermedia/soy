@@ -30,11 +30,7 @@ case class SoyInt(value: Int) extends AnyVal with SoyValue {
   @inline def build = value
 }
 
-case class SoyFloat(value: Float) extends AnyVal with SoyValue {
-  @inline def build = value
-}
-
-case class SoyDouble(value: Double) extends AnyVal with SoyValue {
+case class SoyFloat(value: Double) extends AnyVal with SoyValue {
   @inline def build = value
 }
 
