@@ -68,13 +68,6 @@ trait DefaultSoyWrites {
   }
 
   /**
-   * Converter for Float types.
-   */
-  implicit object FloatSoy extends SoyWrites[Float] {
-    def toSoy(o: Float) = SoyFloat(o)
-  }
-
-  /**
    * Converter for Double types.
    */
   implicit object DoubleSoy extends SoyWrites[Double] {
