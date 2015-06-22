@@ -39,10 +39,6 @@ An integer, represented by an underlying Java `int`.
 
 #### `SoyFloat`
 
-A floating point number, represented by an underlying Java `float`.
-
-#### `SoyDouble`
-
 A double precision floating point number, represented by an underlying Java `double`.
 
 #### `SoyList`
