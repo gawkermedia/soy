@@ -6,7 +6,7 @@ import language.experimental.macros
 
 object SoyMacroImpl {
 
-  def writesImpl[A](c: Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] = {
+  def writesImplLogic[A](c: Context)(typed: Boolean)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] = {
 
     import c.universe._
     import c.universe.Flag._
@@ -153,8 +153,16 @@ object SoyMacroImpl {
         }
     }
 
+    val typeName = "type"
+    val typeValue = companioned.name.toString
+
+    val pairsWithType = if (typed)
+      pairs :+ q"($typeName, $typeValue)"
+    else
+      pairs
+
     val soyMapWritesDef =
-      q"new com.kinja.soy.SoyMapWrites[$atag] { def toSoy(clazz: $atag) = $soy.map(..$pairs) }"
+      q"new com.kinja.soy.SoyMapWrites[$atag] { def toSoy(clazz: $atag) = $soy.map(..$pairsWithType) }"
 
     // Recursive types must be constructed using Lazy.
     if (!hasRec) {
@@ -173,4 +181,9 @@ object SoyMacroImpl {
     }
   }
 
+  def writesImpl[A](c: Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] =
+    writesImplLogic(c)(typed = false)(atag)
+
+  def typedWritesImpl[A](c: Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] =
+    writesImplLogic(c)(typed = true)(atag)
 }

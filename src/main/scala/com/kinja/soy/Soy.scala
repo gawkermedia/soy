@@ -63,4 +63,7 @@ object Soy {
    * Generates a SoyMapWrites[T] for a given case class T.
    */
   def writes[T]: SoyMapWrites[T] = macro SoyMacroImpl.writesImpl[T]
+
+  def typedWrites[T]: SoyMapWrites[T] = macro SoyMacroImpl.typedWritesImpl[T]
+
 }
