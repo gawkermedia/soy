@@ -11,7 +11,7 @@ mistakes.
 
 Add the following to your `build.sbt` file:
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "2.0.0"
+libraryDependencies += "com.kinja" %% "soy" % "2.1.0"
 ```
 
 ## Usage
