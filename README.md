@@ -11,7 +11,7 @@ mistakes.
 
 Add the following to your `build.sbt` file:
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "2.1.0"
+libraryDependencies += "com.kinja" %% "soy" % "2.2.0"
 ```
 
 ## Usage
@@ -48,6 +48,22 @@ A sequence of `SoyValue`, not necessarily the same types.
 #### `SoyMap`
 
 A set of name/value pairs. Names are strings but values can be any `SoyValue`.
+
+#### `SoyHtml`
+
+A pre-escaped HTML fragment. By using this you guarantee the contents are correct and safe.
+
+#### `SoyUri`
+
+A pre-escaped URI. By using this you guarantee the contents are correct and safe.
+
+#### `SoyCss`
+
+A pre-escaped CSS fragment. By using this you guarantee the contents are correct and safe.
+
+#### `SoyJs`
+
+A pre-escaped Javascript fragment or JSON data. By using this you guarantee the contents are correct and safe.
 
 ### Contructing lists and maps
 

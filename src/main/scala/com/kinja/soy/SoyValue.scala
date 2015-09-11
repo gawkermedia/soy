@@ -1,7 +1,8 @@
 package com.kinja.soy
 
-import com.google.template.soy.data.{ SoyMapData, SoyListData }
-import scala.collection.JavaConversions._
+import com.google.template.soy.data._, restricted._
+import scala.collection.JavaConverters._
+import scala.language.postfixOps
 
 /**
  * Base trait of types which can be used in Google Cloure Templatates.
@@ -35,12 +36,12 @@ case class SoyFloat(value: Double) extends AnyVal with SoyValue {
 }
 
 case class SoyList(value: Seq[SoyValue]) extends AnyVal with SoyValue {
-  def build = new SoyListData(asJavaIterable(value.map(_.build)))
+  def build = new SoyListData(value.map(_.build).asJava)
 }
 
 case class SoyMap(value: Map[String, SoyValue]) extends AnyVal with SoyValue {
 
-  def build = new SoyMapData(mapAsJavaMap(value.map { case (k, v) => k -> v.build }))
+  def build = new SoyMapData(value.map { case (k, v) => k -> v.build } asJava)
 
   /**
    * All distinct keys of the map.
@@ -70,3 +71,36 @@ case class SoyMap(value: Map[String, SoyValue]) extends AnyVal with SoyValue {
   def +(field: (String, SoyValue)): SoyMap = SoyMap(value + field)
 
 }
+
+/**
+ * A pre-escaped HTML fragment. By constructing this you are guaranteeing that the value
+ * passed is safe for display.
+ */
+case class SoyHtml(value: String) extends AnyVal with SoyValue {
+  def build = UnsafeSanitizedContentOrdainer.ordainAsSafe(value, SanitizedContent.ContentKind.HTML)
+}
+
+/**
+ * A pre-escaped URI. By constructing this you are guaranteeing that the value
+ * passed is safe for display.
+ */
+case class SoyUri(value: String) extends AnyVal with SoyValue {
+  def build = UnsafeSanitizedContentOrdainer.ordainAsSafe(value, SanitizedContent.ContentKind.URI)
+}
+
+/**
+ * A pre-escaped CSS fragment. By constructing this you are guaranteeing that the value
+ * passed is safe for display.
+ */
+case class SoyCss(value: String) extends AnyVal with SoyValue {
+  def build = UnsafeSanitizedContentOrdainer.ordainAsSafe(value, SanitizedContent.ContentKind.CSS)
+}
+
+/**
+ * A pre-escaped Javascript fragment or JSON data. By constructing this you are guaranteeing
+ * that the value passed is safe for display.
+ */
+case class SoyJs(value: String) extends AnyVal with SoyValue {
+  def build = UnsafeSanitizedContentOrdainer.ordainAsSafe(value, SanitizedContent.ContentKind.JS)
+}
+
