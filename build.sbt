@@ -5,9 +5,9 @@ name := "soy"
 organization := "com.kinja"
 
 // We use Semantic Versioning. See: http://semver.org/
-version := "2.2.1-SNAPSHOT"
+version := "3.0.0"
 
-crossScalaVersions := Seq("2.10.4", "2.11.6")
+scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
@@ -18,7 +18,7 @@ shellPrompt in ThisBuild := { state => Project.extract(state).currentRef.project
 // Dependencies
 
 libraryDependencies ++= Seq(
-	"com.google.template" % "soy" % "2015-04-10",
+	"com.google.template" % "soy" % "2016-08-09",
 	"org.specs2" %% "specs2-core" % "2.4.15" % "test",
 	"org.specs2" %% "specs2-mock" % "2.4.15" % "test",
 	"org.specs2" %% "specs2-junit" % "2.4.15" % "test",
@@ -26,15 +26,6 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-compiler" % _)
-
-libraryDependencies ++= {
-	CrossVersion.partialVersion(scalaVersion.value) match {
-		case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq()
-		case Some((2, 10)) => Seq(
-			"org.scalamacros" %% "quasiquotes" % "2.0.1",
-			compilerPlugin("org.scalamacros" % "paradise_2.10.4" % "2.0.1"))
-	}
-}
 
 // Publishing
 
