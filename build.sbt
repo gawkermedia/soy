@@ -5,7 +5,7 @@ name := "soy"
 organization := "com.kinja"
 
 // We use Semantic Versioning. See: http://semver.org/
-version := "2.2.2-SNAPSHOT"
+version := "3.0.0"
 
 scalaVersion := "2.11.8"
 
