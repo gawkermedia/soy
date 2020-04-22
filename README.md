@@ -1,9 +1,9 @@
 # Scala data structures for Google Closure Templates
 
 This library allows contructing data structures in a similar style how
-[Play! Framework's JSON library](http://www.playframework.com/documentation/2.3.9/ScalaJson) allows building JSON,
+[Play! Framework's JSON library](https://www.playframework.com/documentation/latest/ScalaJson) allows building JSON,
 which can then be directly passed to the
-[Play! 2.3 plugin for Google Closure Templates](https://github.com/gawkermedia/play2-closure) for rendering.
+[Play! module for Google Closure Templates](https://github.com/gawkermedia/play2-closure) for rendering.
 The goal is to avoid passing template data as `Map[String, Any]` and use the Scala compiler's support for detecting
 mistakes.
 
@@ -11,7 +11,7 @@ mistakes.
 
 Add the following to your `build.sbt` file:
 ```scala
-libraryDependencies += "com.kinja" %% "soy" % "2.2.0"
+libraryDependencies += "com.kinja" %% "soy" % "4.0.0"
 ```
 
 ## Usage
