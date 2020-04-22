@@ -1,6 +1,7 @@
 package com.kinja.soy
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 case class Id[A](key: Int)
 
@@ -33,7 +34,7 @@ object MultipleApplies {
   def apply(s: String): MultipleApplies = apply(s.length)
 }
 
-class WritesMacroSpec extends FlatSpec with Matchers {
+class WritesMacroSpec extends AnyFlatSpec with Matchers {
   implicit def Id_Soy[A] = new SoyWrites[Id[A]] {
     def toSoy(id: Id[A]): SoyValue = SoyInt(id.key)
   }

@@ -1,10 +1,11 @@
 package com.kinja.soy
 
-import org.scalatest.{ Matchers, FlatSpec }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 case class TypedClass(i: Int)
 
-class TypedWritesMacroSpec extends FlatSpec with Matchers {
+class TypedWritesMacroSpec extends AnyFlatSpec with Matchers {
 
   implicit val tw = Soy.typedWrites[TypedClass]
 

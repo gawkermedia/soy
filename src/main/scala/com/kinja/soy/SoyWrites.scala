@@ -119,8 +119,8 @@ trait DefaultSoyWrites {
   /**
    * Converter for Traversables types.
    */
-  implicit def traversableSoy[A: SoyWrites] = new SoyWrites[Traversable[A]] {
-    def toSoy(as: Traversable[A]) = SoyList(as.map(Soy.toSoy(_)).toSeq)
+  implicit def iterableSoy[A: SoyWrites] = new SoyWrites[Iterable[A]] {
+    def toSoy(as: Iterable[A]) = SoyList(as.map(Soy.toSoy(_)).toSeq)
   }
 
   /**
