@@ -11,11 +11,8 @@ object Soy {
   /**
    * There is an implicit conversion from any type with a SoyWrites to SoyValueWrapper which is an empty trait that
    * shouldn't end into unexpected implicit conversions.
-   *
-   * Something to note due to `SoyValueWrapper` extending `NotNull`: `null` or `None` will end into compiling error:
-   * use SoyNull instead.
    */
-  sealed trait SoyValueWrapper extends Any with NotNull
+  sealed trait SoyValueWrapper extends Any
 
   /**
    * The only implementation of SoyValueWrapper.
@@ -34,16 +31,20 @@ object Soy {
    * @param items List items which must have implicit SoyWrites available.
    * @return The soy list.
    */
-  def list(items: SoyValueWrapper*): SoyList =
-    SoyList(items.map(_.asInstanceOf[SoyValueWrapperImpl].field))
+  def list(items: SoyValueWrapper*): SoyList = SoyList(items.toSeq.map(unwrap))
 
   /**
    * Creates a SoyMap from key-value pairs.
    * @param items Key-value pairs. The values must have implicit SoyWrites available.
    * @return The soy map.
    */
-  def map(items: (String, SoyValueWrapper)*): SoyMap =
-    SoyMap(items.map { case (k, v) => (k, v.asInstanceOf[SoyValueWrapperImpl].field) }.toMap)
+  def map(items: (String, SoyValueWrapper)*): SoyMap = SoyMap(items.map { case (k, v) => (k, unwrap(v)) }.toMap)
+
+  // Passed nulls will typecheck without needing the implicit conversion, so they need to be checked at runtime
+  private def unwrap(wrapper: SoyValueWrapper) = wrapper match {
+    case null => SoyNull
+    case SoyValueWrapperImpl(value) => value
+  }
 
   /**
    * Converts a value of any type to SoyValue using its implicit SoyWrites.

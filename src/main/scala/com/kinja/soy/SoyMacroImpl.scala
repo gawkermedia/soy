@@ -1,12 +1,12 @@
 package com.kinja.soy
 
 import scala.language.higherKinds
-import scala.reflect.macros.Context
+import scala.reflect.macros.blackbox
 import language.experimental.macros
 
 object SoyMacroImpl {
 
-  def writesImplLogic[A](c: Context)(typed: Boolean)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] = {
+  def writesImplLogic[A](c: blackbox.Context)(typed: Boolean)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] = {
 
     import c.universe._
     import c.universe.Flag._
@@ -15,17 +15,17 @@ object SoyMacroImpl {
     val soyMapWrites = c.universe.weakTypeTag[SoyMapWrites[_]]
 
     val companioned = weakTypeOf[A].typeSymbol
-    val companionSymbol = companioned.companionSymbol
-    val companionType = companionSymbol.typeSignature
+    val companionObject = companioned.companion
+    val companionType = companionObject.typeSignature
 
-    val soyPkg = Select(Select(Ident(newTermName("com")), newTermName("kinja")), newTermName("soy"))
+    val soyPkg = Select(Select(Ident(TermName("com")), TermName("kinja")), TermName("soy"))
 
-    val soy = Select(soyPkg, newTermName("Soy"))
-    val writesSelect = Select(soyPkg, newTermName("SoyWrites"))
-    val lazyHelperSelect = Select(Select(soyPkg, newTermName("util")), newTypeName("Lazy"))
+    val soy = Select(soyPkg, TermName("Soy"))
+    val writesSelect = Select(soyPkg, TermName("SoyWrites"))
+    val lazyHelperSelect = Select(Select(soyPkg, TermName("util")), TypeName("Lazy"))
 
-    val candidateUnapply = companionType.declaration(newTermName("unapply"))
-    val candidateUnapplySeq = companionType.declaration(newTermName("unapplySeq"))
+    val candidateUnapply = companionType.decl(TermName("unapply"))
+    val candidateUnapplySeq = companionType.decl(TermName("unapplySeq"))
     val hasVarArgs = candidateUnapplySeq != NoSymbol
 
     val unapply = (candidateUnapply, candidateUnapplySeq) match {
@@ -53,7 +53,7 @@ object SoyMacroImpl {
     }
 
     val applies =
-      companionType.declaration(newTermName("apply")) match {
+      companionType.decl(TermName("apply")) match {
         case NoSymbol => c.abort(c.enclosingPosition, "No apply function found")
         case s => s.asTerm.alternatives
       }
@@ -74,7 +74,7 @@ object SoyMacroImpl {
     // Find the apply method that matches the unapply method.
     val apply = applies.collectFirst {
       case (apply: MethodSymbol) if hasVarArgs && {
-        val someApplyTypes = apply.paramss.headOption.map(_.map(_.asTerm.typeSignature))
+        val someApplyTypes = apply.paramLists.headOption.map(_.map(_.asTerm.typeSignature))
         val someInitApply = someApplyTypes.map(_.init)
         val someApplyLast = someApplyTypes.map(_.last)
         val someInitUnapply = unapplyReturnTypes.map(_.init)
@@ -86,20 +86,19 @@ object SoyMacroImpl {
         } yield lastApply <:< lastUnapply).getOrElse(false)
         initsMatch && lastMatch
       } => apply
-      case (apply: MethodSymbol) if apply.paramss.headOption.map(_.map(_.asTerm.typeSignature)).exists(a =>
-        unapplyReturnTypes.exists(u => compareTypeLists(a, u))
-      ) => apply
+      case (apply: MethodSymbol) if apply.paramLists.headOption.map(_.map(_.asTerm.typeSignature)).exists(a =>
+        unapplyReturnTypes.exists(u => compareTypeLists(a, u))) => apply
     }
 
     val params = apply match {
-      case Some(apply) => apply.paramss.head // Verify there is a single parameter group
+      case Some(apply) => apply.paramLists.head // Verify there is a single parameter group
       case None if unapplyReturnTypes.isEmpty => List.empty // The case class has no parameters.
       case None => c.abort(c.enclosingPosition, "No apply function found matching unapply parameters")
     }
 
     final case class Implicit(paramName: Name, paramType: Type, neededImplicit: Tree, isRecursive: Boolean, tpe: Type)
 
-    def implicitSoyWrites(name: Name, typ: c.universe.type#Type) = {
+    def implicitSoyWrites(name: Name, typ: Type) = {
       val isRecursive = typ match {
         case TypeRef(_, t, args) =>
           args.exists(_.typeSymbol == companioned)
@@ -121,10 +120,10 @@ object SoyMacroImpl {
     } else
       applyParamImplicits
 
-    val lazyVal = Select(Ident(newTermName("self")), newTermName("lazyVal"))
+    val lazyVal = Select(Ident(TermName("self")), TermName("lazyVal"))
     // Select a higher-kinded implicit constructor from SoyWrites.
     def hkImpl(methodName: String): Tree =
-      Apply(Select(writesSelect, newTermName(methodName)), List(lazyVal))
+      Apply(Select(writesSelect, TermName(methodName)), List(lazyVal))
 
     var hasRec = false
 
@@ -132,9 +131,9 @@ object SoyMacroImpl {
     val pairs = inferredImplicits.map {
       case Implicit(name, t, impl, rec, tpe) =>
         if (impl == EmptyTree && !rec) // We couldn't supply the implicit, usually because this argument is generic.
-          q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName}))"
+          q"(${name.decodedName.toString}, $soy.toSoy(clazz.${name.toTermName}))"
         else if (!rec)
-          q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName})($impl))"
+          q"(${name.decodedName.toString}, $soy.toSoy(clazz.${name.toTermName})($impl))"
         else {
           hasRec = true
           val lazyImpl =
@@ -144,12 +143,12 @@ object SoyMacroImpl {
               Some(hkImpl("arraySoy"))
             else if (tpe.typeConstructor <:< typeOf[Map[_, _]].typeConstructor)
               Some(hkImpl("mapSoy"))
-            else if (tpe.typeConstructor <:< typeOf[Traversable[_]].typeConstructor)
-              Some(hkImpl("traversableSoy"))
+            else if (tpe.typeConstructor <:< typeOf[Iterable[_]].typeConstructor)
+              Some(hkImpl("iterableSoy"))
             else
               None
-          lazyImpl.fold(q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName}))")(impl =>
-            q"(${name.decoded}, $soy.toSoy(clazz.${name.toTermName})($impl))")
+          lazyImpl.fold(q"(${name.decodedName.toString}, $soy.toSoy(clazz.${name.toTermName}))")(impl =>
+            q"(${name.decodedName.toString}, $soy.toSoy(clazz.${name.toTermName})($impl))")
         }
     }
 
@@ -181,9 +180,9 @@ object SoyMacroImpl {
     }
   }
 
-  def writesImpl[A](c: Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] =
+  def writesImpl[A](c: blackbox.Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] =
     writesImplLogic(c)(typed = false)(atag)
 
-  def typedWritesImpl[A](c: Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] =
+  def typedWritesImpl[A](c: blackbox.Context)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] =
     writesImplLogic(c)(typed = true)(atag)
 }
