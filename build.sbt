@@ -37,11 +37,6 @@ scalacOptions ++= Seq(
   "-Ywarn-value-discard"               // Prevent accidental discarding of results in unit functions.
 )
 
-scalariformAutoformat := true
-scalariformPreferences := scalariformPreferences.value
-  .setPreference(DoubleIndentConstructorArguments, true)
-  .setPreference(DanglingCloseParenthesis, Preserve)
-
 scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
   case Some((2, scalaMajor)) if scalaMajor >= 13 =>
     Seq(
@@ -67,6 +62,11 @@ scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
       "-Xfuture"           // Deprecated in Scala 2.13
     )
 })
+
+scalariformAutoformat := true
+scalariformPreferences := scalariformPreferences.value
+  .setPreference(DoubleIndentConstructorArguments, true)
+  .setPreference(DanglingCloseParenthesis, Preserve)
 
 // Dependencies
 
