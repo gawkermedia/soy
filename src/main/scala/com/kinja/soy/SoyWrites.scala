@@ -43,7 +43,7 @@ trait DefaultSoyWrites {
    * Converter for Short types.
    */
   implicit object ShortSoy extends SoyWrites[Short] {
-    def toSoy(o: Short) = SoyInt(o)
+    def toSoy(o: Short) = SoyInt(o.toInt)
   }
 
   /**
@@ -64,7 +64,7 @@ trait DefaultSoyWrites {
    * Converter for Byte types.
    */
   implicit object ByteSoy extends SoyWrites[Byte] {
-    def toSoy(o: Byte) = SoyInt(o)
+    def toSoy(o: Byte) = SoyInt(o.toInt)
   }
 
   /**

@@ -1,6 +1,6 @@
 package com.kinja.soy
 
-import com.google.template.soy.data._, restricted._
+import com.google.template.soy.data._
 import scala.jdk.CollectionConverters._
 import scala.language.postfixOps
 

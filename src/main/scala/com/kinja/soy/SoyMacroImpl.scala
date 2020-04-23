@@ -1,15 +1,12 @@
 package com.kinja.soy
 
-import scala.language.higherKinds
 import scala.reflect.macros.blackbox
-import language.experimental.macros
 
 object SoyMacroImpl {
 
   def writesImplLogic[A](c: blackbox.Context)(typed: Boolean)(implicit atag: c.WeakTypeTag[A]): c.Expr[SoyMapWrites[A]] = {
 
     import c.universe._
-    import c.universe.Flag._
 
     val soyWrites = c.universe.weakTypeTag[SoyWrites[_]]
     val soyMapWrites = c.universe.weakTypeTag[SoyMapWrites[_]]
