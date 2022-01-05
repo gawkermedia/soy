@@ -6,7 +6,7 @@ name := "soy"
 organization := "com.kinja"
 version := "4.0.0-soy-" + googleSoyVersion
 
-crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.1")
+crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.7")
 scalaVersion := crossScalaVersions.value.head
 
 scalacOptions ++= Seq(
@@ -23,7 +23,6 @@ scalacOptions ++= Seq(
   "-Xlint:inaccessible",               // Warn about inaccessible types in method signatures.
   "-Xlint:infer-any",                  // Warn when a type argument is inferred to be `Any`.
   "-Xlint:missing-interpolator",       // A string literal appears to be missing an interpolator id.
-  "-Xlint:nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
   "-Xlint:nullary-unit",               // Warn when nullary methods return Unit.
   "-Xlint:option-implicit",            // Option.apply used implicit view.
   "-Xlint:package-object-classes",     // Class or object defined in package object.
@@ -52,6 +51,7 @@ scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
     Seq(
       "-Xlint:constant",                  // Evaluation of a constant arithmetic expression results in an error.
+      "-Xlint:nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
       "-Ywarn-unused:locals",             // Warn if a local definition is unused.
       "-Ywarn-unused:implicits",          // Warn if an implicit parameter is unused.
       "-Ywarn-unused:privates",           // Warn if a private member is unused.
@@ -72,7 +72,7 @@ scalariformPreferences := scalariformPreferences.value
 
 // Dependencies
 
-val specs2Version = "4.8.3"
+val specs2Version = "4.10.0"
 
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-compiler" % scalaVersion.value,

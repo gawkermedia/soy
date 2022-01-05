@@ -99,7 +99,7 @@ object SoyMacroImpl {
       val isRecursive = typ match {
         case TypeRef(_, t, args) =>
           args.exists(_.typeSymbol == companioned)
-        case TypeRef(_, t, _) => false
+        case _ => false
       }
 
       // Infer an implicit SoyWrites[typ]
