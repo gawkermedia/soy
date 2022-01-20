@@ -4,7 +4,7 @@ val googleSoyVersion = "2021-02-01"
 
 name := "soy"
 organization := "com.kinja"
-version := "4.0.1-soy-" + googleSoyVersion
+version := "5.0.0-soy-" + googleSoyVersion
 
 crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.7")
 scalaVersion := crossScalaVersions.value.head
