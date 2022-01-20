@@ -8,6 +8,7 @@ lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
+.bsp
 
 # Scala-IDE specific
 .scala_dependencies
@@ -21,6 +22,9 @@ project/target
 src/main/webapp/WEB-INF/classes
 src/main/webapp/WEB-INF/lib
 /bin/
+.bloop
+.metals
+metals.sbt
 
 # IntelliJ IDEA specific
 .idea/
