@@ -1,7 +1,6 @@
 package com.kinja.soy
 
 import org.specs2.mutable._
-import com.google.template.soy.data.{ SoyListData, SoyMapData }
 
 final case class Simple(value: Int)
 
@@ -120,7 +119,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[]"
     }
     "be an implicit SoyWrites from Array[Int] to SoyList" in {
@@ -128,7 +127,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[1, 2, 3, 4, 5, 6]"
     }
     "be an implicit SoyWrites from Array[String] to SoyList" in {
@@ -136,7 +135,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[a, b, c]"
     }
     "be an implicit SoyWrites from List[Int] to SoyList" in {
@@ -144,7 +143,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[1, 2, 3, 4, 5, 6]"
     }
     "be an implicit SoyWrites from Seq[Int] to SoyList" in {
@@ -152,7 +151,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[1, 2, 3, 4, 5, 6]"
     }
     "be an implicit SoyWrites from Set[Int] to SoyList" in {
@@ -160,7 +159,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString.toSeq.sorted must_== "[1, 2, 3, 4, 5, 6]".toSeq.sorted
     }
     "be an implicit SoyWrites from Vector[Int] to SoyList" in {
@@ -168,7 +167,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[1, 2, 3, 4, 5, 6]"
     }
     "be an implicit SoyWrites from Iterable[Int] to SoyList" in {
@@ -176,7 +175,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[1, 2, 3, 4, 5, 6]"
     }
     "be an implicit SoyWrites from Iterable[Simple] to SoyList" in {
@@ -184,7 +183,7 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
       built.toString must_== "[Simple(1), Simple(2), Simple(3)]"
     }
     "be an implicit SoyWrites from Iterable[Complex] to SoyList" in {
@@ -195,8 +194,8 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(listValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyList]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyListData]
-      built.toString must_== "[{a: 1, b: a, c: 11, d: Simple(111)}, {a: 2, b: b, c: 22, d: Simple(222)}, {a: 3, b: c, c: 33, d: Simple(333)}]"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.List[Any]]
+      built.toString must_== "[{a=1, b=a, c=11, d=Simple(111)}, {a=2, b=b, c=22, d=Simple(222)}, {a=3, b=c, c=33, d=Simple(333)}]"
     }
 
     "be an implicit SoyWrites from Map[String, Int] to SoyMap" in {
@@ -204,24 +203,24 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(mapValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMap]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMapData]
-      built.toString must_== "{a: 1, b: 2, c: 3}"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.Map[String, Any]]
+      built.toString must_== "{a=1, b=2, c=3}"
     }
     "be an implicit SoyWrites from Map[String, String] to SoyMap" in {
       val mapValue: Map[String, String] = Map("a" -> "1", "b" -> "2", "c" -> "3")
       val soyValue = Soy.toSoy(mapValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMap]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMapData]
-      built.toString must_== "{a: 1, b: 2, c: 3}"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.Map[String, Any]]
+      built.toString must_== "{a=1, b=2, c=3}"
     }
     "be an implicit SoyWrites from Map[String, Simple] to SoyMap" in {
       val mapValue: Map[String, Simple] = Map("a" -> Simple(1), "b" -> Simple(2), "c" -> Simple(3))
       val soyValue = Soy.toSoy(mapValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMap]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMapData]
-      built.toString must_== "{a: Simple(1), b: Simple(2), c: Simple(3)}"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.Map[String, Any]]
+      built.toString must_== "{a=Simple(1), b=Simple(2), c=Simple(3)}"
     }
     "be an implicit SoyWrites from Map[String, Complex] to SoyMap" in {
       val mapValue: Map[String, Complex] = Map(
@@ -231,8 +230,8 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(mapValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMap]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMapData]
-      built.toString must_== "{c1: {a: 1, b: a, c: 11, d: Simple(111)}, c2: {a: 2, b: b, c: 22, d: Simple(222)}, c3: {a: 3, b: c, c: 33, d: Simple(333)}}"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.Map[String, Any]]
+      built.toString must_== "{c1={a=1, b=a, c=11, d=Simple(111)}, c2={a=2, b=b, c=22, d=Simple(222)}, c3={a=3, b=c, c=33, d=Simple(333)}}"
     }
 
     "be an implicit SoyWrites from Option[Int] with None to SoyNull" in {
@@ -277,8 +276,8 @@ class SoyWritesSpec extends Specification {
       val soyValue = Soy.toSoy(optionValue)
       val built = soyValue.build
       soyValue.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMap]
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMapData]
-      built.toString must_== "{a: 1, b: a, c: 11, d: Simple(111)}"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.Map[String, Any]]
+      built.toString must_== "{a=1, b=a, c=11, d=Simple(111)}"
     }
   }
 
@@ -380,8 +379,8 @@ class SoyWritesSpec extends Specification {
     "build the composed complex data structure correctly" in {
       val soyValue = testData
       val built = soyValue.build
-      built.asInstanceOf[AnyRef] must beAnInstanceOf[SoyMapData]
-      built.toString must_== "{simples: [Simple(1), Simple(2)], meta: {title: test title, keywords: [list, of, test, keywords], user: {name: test user, posts: 250, id: 9876543210, loggedIn: true, complex: [{a: 5, b: 5, c: 5, d: Simple(5)}, {a: 6, b: 6, c: 6, d: Simple(6)}, {a: 7, b: 7, c: 7, d: Simple(7)}]}, features: {feature1: true, feature2: false, feature3: true}}, views: 1349, footerHtml: null}"
+      built.asInstanceOf[AnyRef] must beAnInstanceOf[java.util.Map[String, Any]]
+      built.toString must_== "{simples=[Simple(1), Simple(2)], meta={title=test title, keywords=[list, of, test, keywords], user={name=test user, posts=250, id=9876543210, loggedIn=true, complex=[{a=5, b=5, c=5, d=Simple(5)}, {a=6, b=6, c=6, d=Simple(6)}, {a=7, b=7, c=7, d=Simple(7)}]}, features={feature1=true, feature2=false, feature3=true}}, views=1349, footerHtml=null}"
     }
   }
 }

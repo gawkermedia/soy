@@ -1,6 +1,6 @@
 import scalariform.formatter.preferences._
 
-val googleSoyVersion = "2016-08-09"
+val googleSoyVersion = "2021-02-01"
 
 name := "soy"
 organization := "com.kinja"

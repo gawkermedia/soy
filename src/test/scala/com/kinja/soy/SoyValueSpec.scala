@@ -1,7 +1,6 @@
 package com.kinja.soy
 
 import org.specs2.mutable._
-import com.google.template.soy.data.{ SoyMapData, SoyListData }
 
 class SoyValueSpec extends Specification {
 
@@ -71,56 +70,56 @@ class SoyValueSpec extends Specification {
     }
   }
   "SoyList" should {
-    "build the wrapped Seq() as SoyListData" in {
+    "build the wrapped Seq() as java.util.List" in {
       val seq = Seq[SoyValue]()
       val value: AnyRef = SoyList(seq).build
-      value must beAnInstanceOf[SoyListData]
+      value must beAnInstanceOf[java.util.List[Any]]
       value.toString must_== "[]"
     }
-    "build the wrapped Seq[SoyInt](items) as SoyListData" in {
+    "build the wrapped Seq[SoyInt](items) as java.util.List" in {
       val seq = Seq[SoyInt](SoyInt(1), SoyInt(2), SoyInt(3))
       val value: AnyRef = SoyList(seq).build
-      value must beAnInstanceOf[SoyListData]
+      value must beAnInstanceOf[java.util.List[Any]]
       value.toString must_== "[1, 2, 3]"
     }
-    "build the wrapped Seq[SoyValue](items) as SoyListData" in {
+    "build the wrapped Seq[SoyValue](items) as java.util.List" in {
       val seq = Seq[SoyValue](SoyInt(1), SoyString("a"), SoyNull, SoyBoolean(true))
       val value: AnyRef = SoyList(seq).build
-      value must beAnInstanceOf[SoyListData]
+      value must beAnInstanceOf[java.util.List[Any]]
       value.toString must_== "[1, a, null, true]"
     }
-    "build the wrapped Seq[SoyMap](items) as SoyListData" in {
+    "build the wrapped Seq[SoyMap](items) as java.util.List" in {
       val seq = Seq[SoyMap](SoyMap(Map("a" -> SoyInt(1))), SoyMap(Map("b" -> SoyInt(2), "c" -> SoyInt(3))))
       val value: AnyRef = SoyList(seq).build
-      value must beAnInstanceOf[SoyListData]
-      value.toString must_== "[{a: 1}, {b: 2, c: 3}]"
+      value must beAnInstanceOf[java.util.List[Any]]
+      value.toString must_== "[{a=1}, {b=2, c=3}]"
     }
   }
 
   "SoyMap" should {
-    "build the wrapped Seq() as SoyMapData" in {
+    "build the wrapped Seq() as java.util.Map" in {
       val map = Map[String, SoyValue]()
       val value: AnyRef = SoyMap(map).build
-      value must beAnInstanceOf[SoyMapData]
+      value must beAnInstanceOf[java.util.Map[String, Any]]
       value.toString must_== "{}"
     }
-    "build the wrapped Seq[String, SoyInt](items) as SoyMapData" in {
+    "build the wrapped Seq[String, SoyInt](items) as java.util.Map" in {
       val map = Map[String, SoyInt]("a" -> SoyInt(1), "b" -> SoyInt(2), "c" -> SoyInt(3))
       val value: AnyRef = SoyMap(map).build
-      value must beAnInstanceOf[SoyMapData]
-      value.toString must_== "{a: 1, b: 2, c: 3}"
+      value must beAnInstanceOf[java.util.Map[String, Any]]
+      value.toString must_== "{a=1, b=2, c=3}"
     }
-    "build the wrapped Seq[String, SoyValue](items) as SoyMapData" in {
+    "build the wrapped Seq[String, SoyValue](items) as java.util.Map" in {
       val map = Map[String, SoyValue]("a" -> SoyInt(1), "b" -> SoyString("x"), "c" -> SoyNull, "d" -> SoyBoolean(false))
       val value: AnyRef = SoyMap(map).build
-      value must beAnInstanceOf[SoyMapData]
-      value.toString must_== "{a: 1, b: x, c: null, d: false}"
+      value must beAnInstanceOf[java.util.Map[String, Any]]
+      value.toString must_== "{a=1, b=x, c=null, d=false}"
     }
-    "build the wrapped Seq[String, SoyList](items) as SoyMapData" in {
+    "build the wrapped Seq[String, SoyList](items) as java.util.Map" in {
       val map = Map[String, SoyList]("a" -> SoyList(Seq(SoyInt(1), SoyInt(2))), "b" -> SoyList(Seq(SoyInt(4), SoyNull)), "c" -> SoyList(Seq[SoyFloat]()))
       val value: AnyRef = SoyMap(map).build
-      value must beAnInstanceOf[SoyMapData]
-      value.toString must_== "{a: [1, 2], b: [4, null], c: []}"
+      value must beAnInstanceOf[java.util.Map[String, Any]]
+      value.toString must_== "{a=[1, 2], b=[4, null], c=[]}"
     }
   }
 }

@@ -36,12 +36,12 @@ case class SoyFloat(value: Double) extends AnyVal with SoyValue {
 }
 
 case class SoyList(value: Seq[SoyValue]) extends AnyVal with SoyValue {
-  def build = new SoyListData(value.map(_.build).asJava)
+  def build = value.map(_.build).asJava
 }
 
 case class SoyMap(value: Map[String, SoyValue]) extends AnyVal with SoyValue {
 
-  def build = new SoyMapData(value.map { case (k, v) => k -> v.build } asJava)
+  def build = value.map { case (k, v) => k -> v.build }.asJava
 
   /**
    * All distinct keys of the map.
