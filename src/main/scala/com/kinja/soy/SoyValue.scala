@@ -2,7 +2,6 @@ package com.kinja.soy
 
 import com.google.template.soy.data._
 import scala.jdk.CollectionConverters._
-import scala.language.postfixOps
 
 /**
  * Base trait of types which can be used in Google Cloure Templatates.
